@@ -5,8 +5,9 @@ const { conn } = require("./src/db.js");
 
 // Para la precarga cuando se levanta el server, ejecutar la funcion getEpisodes(). Al ser una peticion vamos a usar async await.
 
-conn.sync({ force: true }).then(() => {
+conn.sync({ force: false }).then(() => {
   server.listen(3001, () => {
     console.log("Listening at 3001"); // eslint-disable-line no-console
   });
 });
+
