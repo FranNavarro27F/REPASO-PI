@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-const {getCharacters, getEpisodes}= require("./controlers/controlers.js");
+const {getCharacters, getEpisodes, getId}= require("./controlers/controlers.js");
 const {Character, Episode }=require("../db")
 const router = Router();
 
@@ -20,6 +20,15 @@ router.get("/episodes",async (req, res)=>{
     }
 });
 
+router.get("/character/:id",async (req, res)=>{
+    try {
+        const {id}=req.params;
+        res.json(await getId(id));
+    } catch (e) {
+        res.status(400).json({error:e.message})
+    }
+})
+
 router.post("/character",async (req, res)=>{
     try {
         let {img,name,origin,species,episode,created}=req.body;
@@ -31,9 +40,20 @@ router.post("/character",async (req, res)=>{
             created,
         })
         await t.addEpisode(episode)
-
-        res.json(t)
-       
+        let newCharacter = await Character.findAll({
+            where:{
+                id: t.id,
+            },
+            include: {
+                model: Episode,
+                attributes: ["name"],
+                through:{
+                    attributes:[],
+                }
+            }
+        });
+        let char= newCharacter[0].dataValues;
+        res.json(char)
     } catch (e) {
         res.status(400).json({error:e.message});
     }
