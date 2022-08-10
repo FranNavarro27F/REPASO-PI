@@ -1,61 +1,5 @@
 const axios= require("axios");
 const {Character, Episode} = require("../../db.js");
-// let arr=[
-//     'https://rickandmortyapi.com/api/episode/1',
-//     'https://rickandmortyapi.com/api/episode/2',
-//     'https://rickandmortyapi.com/api/episode/3',
-//     'https://rickandmortyapi.com/api/episode/4',
-//     'https://rickandmortyapi.com/api/episode/5',
-//     'https://rickandmortyapi.com/api/episode/6',
-//     'https://rickandmortyapi.com/api/episode/7',
-//     'https://rickandmortyapi.com/api/episode/8',
-//     'https://rickandmortyapi.com/api/episode/9',
-//     'https://rickandmortyapi.com/api/episode/10',
-//     'https://rickandmortyapi.com/api/episode/11',
-//     'https://rickandmortyapi.com/api/episode/12',
-//     'https://rickandmortyapi.com/api/episode/13',
-//     'https://rickandmortyapi.com/api/episode/14',
-//     'https://rickandmortyapi.com/api/episode/15',
-//     'https://rickandmortyapi.com/api/episode/16',
-//     'https://rickandmortyapi.com/api/episode/17',
-//     'https://rickandmortyapi.com/api/episode/18',
-//     'https://rickandmortyapi.com/api/episode/19',
-//     'https://rickandmortyapi.com/api/episode/20',
-//     'https://rickandmortyapi.com/api/episode/21',
-//     'https://rickandmortyapi.com/api/episode/22',
-//     'https://rickandmortyapi.com/api/episode/23',
-//     'https://rickandmortyapi.com/api/episode/24',
-//     'https://rickandmortyapi.com/api/episode/25',
-//     'https://rickandmortyapi.com/api/episode/26',
-//     'https://rickandmortyapi.com/api/episode/27',
-//     'https://rickandmortyapi.com/api/episode/28',
-//     'https://rickandmortyapi.com/api/episode/29',
-//     'https://rickandmortyapi.com/api/episode/30',
-//     'https://rickandmortyapi.com/api/episode/31',
-//     'https://rickandmortyapi.com/api/episode/32',
-//     'https://rickandmortyapi.com/api/episode/33',
-//     'https://rickandmortyapi.com/api/episode/34',
-//     'https://rickandmortyapi.com/api/episode/35',
-//     'https://rickandmortyapi.com/api/episode/36',
-//     'https://rickandmortyapi.com/api/episode/37',
-//     'https://rickandmortyapi.com/api/episode/38',
-//     'https://rickandmortyapi.com/api/episode/39',
-//     'https://rickandmortyapi.com/api/episode/40',
-//     'https://rickandmortyapi.com/api/episode/41',
-//     'https://rickandmortyapi.com/api/episode/42',
-//     'https://rickandmortyapi.com/api/episode/43',
-//     'https://rickandmortyapi.com/api/episode/44',
-//     'https://rickandmortyapi.com/api/episode/45',
-//     'https://rickandmortyapi.com/api/episode/46',
-//     'https://rickandmortyapi.com/api/episode/47',
-//     'https://rickandmortyapi.com/api/episode/48',
-//     'https://rickandmortyapi.com/api/episode/49',
-//     'https://rickandmortyapi.com/api/episode/50',
-//     'https://rickandmortyapi.com/api/episode/51'
-//   ]
-// ;
-
-
 
 async function auxNamesEpisodes(arr){
     let result=arr.map(async cur=>{
@@ -66,28 +10,12 @@ async function auxNamesEpisodes(arr){
     return r;
 };
 
-// const getCharacters= async()=>{
-//  let {data}= await axios.get("https://rickandmortyapi.com/api/character");
-//  let filt= data.results;
-//     console.log(filt)
-//  let rr= await Promise.all(
-//     filt.map(async cur=>{ 
-//         let urls= cur.episode;
-//             return{
-//                 id: cur.id,
-//                 name:cur.name,
-//                 species:cur.species,
-//                 origin:cur.origin.name,
-//                 img: cur.image,
-//                 created:cur.created,
-//                 episodes: await auxNamesEpisodes(urls)
-//             }
-//      })
-//  )
-//     console.log(rr)
-//   return rr
-// };
-// getCharacters()
+async function getNext(next){
+    let {data}= await axios.get(next)
+    let result= data.results;
+
+    return [result, data.info.next]
+} 
 
 const getCharacters= async()=>{
     let db= await Character.findAll({
@@ -100,7 +28,6 @@ const getCharacters= async()=>{
         }
     })
     let l= db.map(cur=> cur.dataValues);
-   
     let ld= l.map(cur=> {
         return{
             id: cur.id,
@@ -112,10 +39,16 @@ const getCharacters= async()=>{
             episodes: cur.episodes.length
         }
     })
-    let {data}= await axios.get("https://rickandmortyapi.com/api/character");
-    let filt= data.results;
+    ////////
+    let pet1= await getNext("https://rickandmortyapi.com/api/character");
+    let pet2= await getNext(pet1[1]);
+    let pet3= await getNext(pet2[1]);
+    let pet4= await getNext(pet3[1]);
+    let pet5= await getNext(pet4[1]);
+    let res=pet1[0].concat(pet2[0],pet3[0],pet4[0],pet5[0]);
+
     let rr= await Promise.all(
-       filt.map(async cur=>{ 
+       res.map(async cur=>{ 
                return{
                    id: cur.id,
                    name:cur.name,
@@ -132,7 +65,6 @@ const getCharacters= async()=>{
    };
 
 const getId= async(id)=>{
-   
     if(id.includes("-")){
         let db= await Character.findByPk(id,{
             include: {
@@ -143,7 +75,6 @@ const getId= async(id)=>{
         let dbs= db.dataValues;
         dbs.episodes=dbs.episodes.map(cur=> cur.name);
     }else{
-
         let {data}= await axios.get(`https://rickandmortyapi.com/api/character/${id}`);
         let urls= data.episode;
         let apiId={
@@ -158,9 +89,7 @@ const getId= async(id)=>{
         console.log(apiId)
         return apiId;
     }
-   
-}
-
+};
 
 const getEpisodes= async()=>{
      let estan=await Episode.findAll();
@@ -184,10 +113,7 @@ const getEpisodes= async()=>{
 getEpisodes();
 
 
-
-
 module.exports={
-   
     getCharacters,
     getEpisodes,
     getId
