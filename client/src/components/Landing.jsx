@@ -1,13 +1,18 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+
+import "./css/Landing.css";
+
 
 export default function Landing() {
+  const navigate = useNavigate();
+  
+
   return (
-    <div>
-      <h1>Landing</h1>
-      <Link to={"/home"}> 
-      <button>start!!</button>
-      </Link>
+    <div id={"landing_div"}>
+      <div id={"landing_div_button"}>
+        <button onClick={()=>navigate("/home")}>start !!</button> 
+      </div>
     </div>
   )
 }

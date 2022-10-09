@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { createCaracter, getEpisodes } from '../redux/actions';
 import NavBar from './NavBar';
 
@@ -18,7 +19,7 @@ export default function Create() {
     img:"",
     name:"",
     origin:"",
-    specie:"",
+    species:"",
     episodes:[]
   });
 
@@ -43,7 +44,7 @@ export default function Create() {
       img:"",
       name:"",
       origin:"",
-      specie:"",
+      species:"",
       episodes:[]
     })
   }
@@ -66,8 +67,8 @@ export default function Create() {
         />
       </div>
       <div>
-        <label>Specie</label>
-        <input type="text" name={"specie"} value={input.specie} 
+        <label>Species</label>
+        <input type="text" name={"species"} value={input.species} 
         onChange={(e)=>{handleChange(e)}}
         />
       </div>
@@ -87,9 +88,17 @@ export default function Create() {
           })
         }
       </select>
+
+      <br/>
+      <br/>
       <input type="submit" />
     </form>
 
+    <br/>
+    <br/>
+    <Link to={"/home"}>
+    <button>Back to Home</button>
+    </Link>
     </div>
   )
 }

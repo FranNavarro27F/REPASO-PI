@@ -1,8 +1,15 @@
 
 .grid{    
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    grid-column-gap: 17px;
-    grid-row-gap: 12px;  
+    grid-template-columns: repeat(4, 19rem);
+    grid-template-rows: repeat(2, 21rem);
+    grid-column-gap: 25px;
+    grid-row-gap: 23px;      
 }
+/* .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 19px;
+    grid-row-gap: 13px;
+    } */

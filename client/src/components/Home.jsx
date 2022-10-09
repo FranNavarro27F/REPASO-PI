@@ -7,6 +7,10 @@ import NavBar from './NavBar.jsx';
 import Paginado from './Paginado.jsx';
 import { useState } from 'react';
 import "./css/Home.css";
+import Orders from './Orders.jsx';
+import SearchBar from './SearchBar.jsx';
+
+
 
 export default function Home() {
   const dispatch= useDispatch();
@@ -16,7 +20,7 @@ export default function Home() {
   let indexOfLastCharacter= page*characterPerPage;
   let indexOfFirstCharacter=indexOfLastCharacter-characterPerPage;
   let currentCharacters=allCharacters.slice(indexOfFirstCharacter, indexOfLastCharacter);
-
+  let [order, setOrder]= useState("");
 
   useEffect(()=>{
     dispatch(getCharacters())
@@ -28,8 +32,17 @@ export default function Home() {
 
   return (
     <div>
-      <NavBar/>
-      <h1>home</h1>
+      <div><NavBar/></div>
+      <div><SearchBar/></div>
+      
+
+      <div>
+        {order}
+        <Orders setOrder={setOrder}/>
+        <br/>
+        <br/>
+      </div>
+
       <label>Characters per page</label>
       <select onChange={(e)=> handleChangeRange(e)} >
         <option value={5}>5</option>
@@ -46,16 +59,19 @@ export default function Home() {
       {
         currentCharacters?.map(cur=>{
           return( 
-            <div>
-              <Card
-                key={cur.id}
-                img={cur.img}
-                name={cur.name}
-                origin={cur.origin}
-                spices={cur.spices}
-                episodes={cur.episodes}
-              />
-            </div>
+            // <Link to={`/detail/${cur.id}`}>
+              <div key={cur.id+Math.random()*100000}>
+                <Card
+                  key={cur.id}
+                  idRuta={cur.id}
+                  img={cur.img}
+                  name={cur.name}
+                  origin={cur.origin}
+                  spices={cur.spices}
+                  episodes={cur.episodes}
+                />
+              </div>
+            // </Link>
           )
         })
       }
